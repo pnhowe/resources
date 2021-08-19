@@ -42,6 +42,10 @@ sflinks = [
 # enable embeded pve
 # https://docs.fedoraproject.org/en-US/quick-docs/using-nested-virtualization-in-kvm/
 
+# root@pve01{/etc/modprobe.d}:# cat kvm-intel.conf
+# options kvm-intel nested=Y
+
+
 # install dhcp-helper
 
 # /etc/default/dhcp-helper

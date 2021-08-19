@@ -25,6 +25,7 @@
   'awsec2_image_id:AWS' = 'ami-efd0428f'
   'docker_image:Docker' = 'ubuntu:xenial'
   'azure_image:Azure' = { 'publisher' = 'Canonical', 'offer' = 'UbuntuServer', 'sku' = '16.04-LTS', 'version' = 'latest' }
+  'packet_os:Packet' = 'ubuntu_16_04'
 
 [ structure.ubuntu-bionic-base ]
   description = 'Base Ubuntu Bionic Beaver (18.04 LTS)'
@@ -33,6 +34,7 @@
   distro_version = 'bionic'
   'docker_image:Docker' = 'ubuntu:bionic'
   'azure_image:Azure' = { 'publisher' = 'Canonical', 'offer' = 'UbuntuServer', 'sku' = '18.04-LTS', 'version' = 'latest' }
+  'packet_os:Packet' = 'ubuntu_18_04'
 
 [ structure.ubuntu-focal-base ]
   description = 'Base Ubuntu Focal Fossa (20.04 LTS)'
@@ -41,6 +43,7 @@
   distro_version = 'focal'
   'docker_image:Docker' = 'ubuntu:focal'
   'azure_image:Azure' = { 'publisher' = 'Canonical', 'offer' = 'UbuntuServer', 'sku' = '20.04-LTS', 'version' = 'latest' }
+  'packet_os:Packet' = 'ubuntu_20_04'
 
 [ pxe.ubuntu ]
   boot_script = """echo Ubuntu Installer
