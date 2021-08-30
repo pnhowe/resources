@@ -13,4 +13,4 @@ then
 fi
 
 echo "Loading Blueprints..."
-/usr/lib/contractor/util/blueprintLoader ${1}usr/lib/contractor/resources/jumpbox.toml
+/usr/lib/contractor/util/blueprintLoader ${1}usr/lib/contractor/resources/utility.toml
