@@ -33,7 +33,7 @@ elif ( foundation.type == 'Docker' ) then
   end
 
 else
-  begin( description='Provision From Installer' )
+  begin( description='Provision From Installer', expected_time=10:00 )
     if not structure.provisioning_interface then
       fatal_error( msg='Provisioning Interface Not Defined' )
 
@@ -47,7 +47,7 @@ else
   end
 
 if check_port then
-  begin( description='Verify Running' )
+  begin( description='Verify Running', expected_time=05:00 )
     iputils.wait_for_port( target=structure.primary_ip, port=check_port )
   end"""
 
@@ -65,7 +65,7 @@ elif ( foundation.type == 'Docker' ) then
   end
 
 else
-  begin( description='Power Off' )
+  begin( description='Power Off', expected_time=02:00 )
     foundation.power_off()
     # Wipe MBR/Disk
   end
