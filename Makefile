@@ -12,8 +12,8 @@ build/ipxe/var/lib/tftpboot/ipxe:
 
 ubuntu-pxe:
 	mkdir -p os-bases/ubuntu/var/www/static/pxe/ubuntu-installer
-	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd ] || wget http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd
-	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz ] || wget http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/linux -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz
+	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd ] || wget http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64/initrd.gz -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd
+	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz ] || wget http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64/linux -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz
 	touch ubuntu-pxe
 
 centos-pxe:
