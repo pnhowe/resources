@@ -7,6 +7,8 @@ prompt --key s --timeout 5000 Press 's' for shell && goto do_shell ||
 echo mac.........${net0/mac}
 dhcp net0 || goto retry
 
+echo platform:...${platform}
+echo builtarch:..${buildarch}
 echo hostname:...${net0/hostname}
 echo Config UUID:${210:string}
 echo ip address:.${net0/ip}
@@ -26,6 +28,11 @@ chain http://contractor/config/boot_script/ || goto retry
 
 :w_config
 chain http://contractor/config/boot_script/c/${210:string} || goto retry
+
+# the script didn't error, but also didn't go anywhere, hand it off to the EFI/BIOS
+# NOTE: efi "normal" boot goes through here b/c it san boot the local disk
+:fall_through
+exit 1
 
 :do_shell
 echo Dropping to iPXE shell, docs at http://ipxe.org/cmd

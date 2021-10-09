@@ -1,4 +1,4 @@
-VERSION := 0.6.0
+VERSION := 0.7.0
 
 all:
 
@@ -39,6 +39,7 @@ vcenter-ova:
 
 clean:
 	$(MAKE) -C ipxe clean
+	$(RM) build/ipxe/var/lib/tftpboot/ipxe
 	$(RM) -r build
 	$(RM) *.respkg
 	$(RM) ubuntu-pxe

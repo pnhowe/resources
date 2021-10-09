@@ -73,5 +73,7 @@ else
 
 [ pxe.normal-boot ]
   boot_script = """echo Booting form Primary Boot Disk
-sanboot --no-describe --drive 0x80 || exit 1 || echo Primary Boot Disk is not Bootable"""
+# if this is EFI, fall through, the iPXE script will error out to the EFI to boot local disk
+iseq ${platform} efi && exit 0 ||
+sanboot --no-describe --drive 0x80 || echo Primary Boot Disk is not Bootable && exit 1"""
   template = '# Normal Boot'
