@@ -37,7 +37,7 @@ else
     if not structure.provisioning_interface then
       fatal_error( msg='Provisioning Interface Not Defined' )
 
-    if ( config.installer_pxe == 'linux-installer' )
+    if ( config.installer_pxe == 'linux-installer' ) then
     begin( description='Install Internal PXE' )
       signaling.reset( pxe_name='linux-installer' )
       dhcp.set_pxe( interface=structure.provisioning_interface, pxe='linux-installer')
