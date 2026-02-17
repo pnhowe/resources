@@ -37,12 +37,14 @@ else
     if not structure.provisioning_interface then
       fatal_error( msg='Provisioning Interface Not Defined' )
 
+    foundation.wait_for_poweroff()
+
     if ( config.installer_pxe == 'linux-installer' ) then
     begin( description='Install Internal PXE' )
       signaling.reset( pxe_name='linux-installer' )
       dhcp.set_pxe( interface=structure.provisioning_interface, pxe='linux-installer')
       foundation.power_on()
-      delay( seconds=120 )
+      delay( seconds=30 )
       signaling.wait_for_completion()
       foundation.wait_for_poweroff()
     end
