@@ -1,19 +1,19 @@
-VERSION := 0.5
+VERSION := 0.8.1
 
 all:
 
 version:
 	echo $(VERSION)
 
-build/ipxe/var/lib/tftpboot/ipxe:
+build/ipxe/srv/tftp/ipxe:
 	$(MAKE) -C ipxe
-	mkdir -p build/ipxe/var/lib/tftpboot
-	cp ipxe/bin/* build/ipxe/var/lib/tftpboot
+	mkdir -p build/ipxe/srv/tftp
+	cp ipxe/bin/* build/ipxe/srv/tftp
 
 ubuntu-pxe:
 	mkdir -p os-bases/ubuntu/var/www/static/pxe/ubuntu-installer
-	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd ] || wget http://archive.ubuntu.com/ubuntu/dists/bionic-updates/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd
-	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz ] || wget http://archive.ubuntu.com/ubuntu/dists/bionic-updates/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/linux -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz
+	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd ] || wget http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64/initrd.gz -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/initrd
+	[ -f os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz ] || wget http://archive.ubuntu.com/ubuntu/dists/focal-updates/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64/linux -O os-bases/ubuntu/var/www/static/pxe/ubuntu-installer/vmlinuz
 	touch ubuntu-pxe
 
 centos-pxe:
@@ -39,6 +39,7 @@ vcenter-ova:
 
 clean:
 	$(MAKE) -C ipxe clean
+	$(RM) build/ipxe/srv/tftp
 	$(RM) -r build
 	$(RM) *.respkg
 	$(RM) ubuntu-pxe
@@ -55,30 +56,22 @@ dist-clean: clean
 
 .PHONY:: all version clean dist-clean
 
-oldvcenter:
-	patch -p0 < vcenter-pre67.patch
-
-newvcenter:
-	patch -p0 -R < vcenter-pre67.patch
-
-.PHONY:: oldvcenter newvcenter
-
-respkg-distros:
-	echo ubuntu-xenial
+respkg-blueprints:
+	echo ubuntu-focal-base
 
 respkg-requires:
 	echo respkg fakeroot build-essential liblzma-dev xorriso
 
-respkg: ubuntu-pxe centos-pxe esx-pxe vcenter-ova build/ipxe/var/lib/tftpboot/ipxe
+# Old stuff, disabled: centos-pxe esx-pxe vcenter-ova
+respkg: ubuntu-pxe  build/ipxe/srv/tftp/ipxe
 	cd os-bases && fakeroot respkg -b ../contractor-os-base_$(VERSION).respkg       -n contractor-os-base      -e $(VERSION) -c "Contractor - OS Base"               -t load_os_base.sh -d os_base
 	cd os-bases && fakeroot respkg -b ../contractor-ubuntu-base_$(VERSION).respkg   -n contractor-ubuntu-base  -e $(VERSION) -c "Contractor - Ubuntu Base"           -t load_ubuntu.sh  -d ubuntu  -s contractor-os-base
-	cd os-bases && fakeroot respkg -b ../contractor-centos-base_$(VERSION).respkg   -n contractor-centos-base  -e $(VERSION) -c "Contractor - CentOS Base"           -t load_centos.sh  -d centos  -s contractor-os-base
-	cd utility  && fakeroot respkg -b ../contractor-jumpbox_$(VERSION).respkg       -n contractor-jumpbox      -e $(VERSION) -c "Contractor - Jumpbox"               -t load_jumpbox.sh -d jumpbox -s ubuntu
-	cd vmware   && fakeroot respkg -b ../contractor-vmware-base_$(VERSION).respkg   -n contractor-vmware-base  -e $(VERSION) -c "Contractor - VMware Base"           -t load_vmware.sh  -d vmware  -s contractor-os-base -s contractor-plugins-vcenter
-	cd proxmox  && fakeroot respkg -b ../contractor-proxmoxe-base_$(VERSION).respkg -n contractor-proxmox-base -e $(VERSION) -c "Contractor - Proxmox Base"          -t load_proxmox.sh -d proxmox -s contractor-os-base -s contractor-plugins-proxmox
+#	cd os-bases && fakeroot respkg -b ../contractor-centos-base_$(VERSION).respkg   -n contractor-centos-base  -e $(VERSION) -c "Contractor - CentOS Base"           -t load_centos.sh  -d centos  -s contractor-os-base
+	cd utility  && fakeroot respkg -b ../contractor-utility_$(VERSION).respkg       -n contractor-utility      -e $(VERSION) -c "Contractor - Utility"               -t load_utility.sh -d utility -s ubuntu
+#	cd vmware   && fakeroot respkg -b ../contractor-vmware-base_$(VERSION).respkg   -n contractor-vmware-base  -e $(VERSION) -c "Contractor - VMware Base"           -t load_vmware.sh  -d vmware  -s contractor-os-base -s contractor-plugins-vcenter
 	cd build    && fakeroot respkg -b ../contractor-ipxe_$(VERSION).respkg          -n contractor-ipxe         -e $(VERSION) -c "Contractor - iPXE - Netboot loader" -y -d ipxe
 
 respkg-file:
 	echo $(shell ls *.respkg)
 
-.PHONY:: respkg-distros respkg-requires respkg respkg-file
+.PHONY:: respkg-blueprints respkg-requires respkg respkg-file

@@ -33,21 +33,35 @@ elif ( foundation.type == 'Docker' ) then
   end
 
 else
-  begin( description='Provision From Installer' )
+  begin( description='Provision From Installer', expected_time=10:00 )
     if not structure.provisioning_interface then
       fatal_error( msg='Provisioning Interface Not Defined' )
 
+    foundation.wait_for_poweroff()
+
+    if ( config.installer_pxe == 'linux-installer' ) then
+    begin( description='Install Internal PXE' )
+      signaling.reset( pxe_name='linux-installer' )
+      dhcp.set_pxe( interface=structure.provisioning_interface, pxe='linux-installer')
+      foundation.power_on()
+      delay( seconds=30 )
+      signaling.wait_for_completion()
+      foundation.wait_for_poweroff()
+    end
+    else
+    begin( description='Install With Vendor PXE' )
       dhcp.set_pxe( interface=structure.provisioning_interface, pxe=config.installer_pxe )
       foundation.power_on()
       delay( seconds=300 )
       foundation.wait_for_poweroff()
+    end
 
-      dhcp.set_pxe( interface=structure.provisioning_interface, pxe='normal-boot' )
-      foundation.power_on()
+    dhcp.set_pxe( interface=structure.provisioning_interface, pxe='normal-boot' )
+    foundation.power_on()
   end
 
 if check_port then
-  begin( description='Verify Running' )
+  begin( description='Verify Running', expected_time=05:00 )
     iputils.wait_for_port( target=structure.primary_ip, port=check_port )
   end"""
 
@@ -65,7 +79,7 @@ elif ( foundation.type == 'Docker' ) then
   end
 
 else
-  begin( description='Power Off' )
+  begin( description='Power Off', expected_time=02:00 )
     foundation.power_off()
     # Wipe MBR/Disk
   end
@@ -73,5 +87,7 @@ else
 
 [ pxe.normal-boot ]
   boot_script = """echo Booting form Primary Boot Disk
-sanboot --no-describe --drive 0x80 || exit 1 || echo Primary Boot Disk is not Bootable"""
+# if this is EFI, fall through, the iPXE script will error out to the EFI to boot local disk
+iseq ${platform} efi && exit 0 ||
+sanboot --no-describe --drive 0x80 || echo Primary Boot Disk is not Bootable && exit 1"""
   template = '# Normal Boot'

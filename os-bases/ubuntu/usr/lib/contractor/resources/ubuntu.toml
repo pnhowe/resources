@@ -42,9 +42,25 @@
   'docker_image:Docker' = 'ubuntu:focal'
   'azure_image:Azure' = { 'publisher' = 'Canonical', 'offer' = 'UbuntuServer', 'sku' = '20.04-LTS', 'version' = 'latest' }
 
+[ structure.ubuntu-jammy-base ]
+  description = 'Base Ubuntu Jammy Jellyfish (22.04 LTS)'
+  parents = [ 'ubuntu-base' ]
+[ structure.ubuntu-jammy-base.config_values ]
+  distro_version = 'jammy'
+  'docker_image:Docker' = 'ubuntu:jammy'
+  'azure_image:Azure' = { 'publisher' = 'Canonical', 'offer' = 'UbuntuServer', 'sku' = '22.04-LTS', 'version' = 'latest' }
+
+[ structure.ubuntu-noble-base ]
+  description = 'Base Ubuntu Noble Numbat (24.04 LTS)'
+  parents = [ 'ubuntu-base' ]
+[ structure.ubuntu-noble-base.config_values ]
+  distro_version = 'noble'
+  'docker_image:Docker' = 'ubuntu:noble'
+  'azure_image:Azure' = { 'publisher' = 'Canonical', 'offer' = 'UbuntuServer', 'sku' = '24.04-LTS', 'version' = 'latest' }
+
 [ pxe.ubuntu ]
   boot_script = """echo Ubuntu Installer
-kernel {{ __pxe_location }}/ubuntu-installer/vmlinuz auto url={{ __pxe_template_location }} locale=en_US.UTF-8 keyboard-configuration/layoutcode=us netcfg/no_default_route=true ksdevice=bootif interface={{ _primary_interface }} domain={{ _domain_name }} hostname={{ _hostname }} BOOTIF={{ _primary_interface_mac.replace( ':', '-' ) }}
+kernel {{ __pxe_location }}/ubuntu-installer/vmlinuz auto url={{ __contractor_host }}/config/pxe_template/c/{{ _structure_config_uuid }} locale=en_US.UTF-8 keyboard-configuration/layoutcode=us netcfg/no_default_route=true ksdevice=bootif interface={{ _primary_interface }} domain={{ _domain_name }} hostname={{ _hostname }} BOOTIF={{ _primary_interface_mac.replace( ':', '-' ) }}
 initrd {{ __pxe_location }}/ubuntu-installer/initrd
 boot
 """

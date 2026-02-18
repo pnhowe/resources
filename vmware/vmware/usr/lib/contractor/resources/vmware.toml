@@ -24,19 +24,25 @@ sflinks = [
 [ script.create-esx ]
   description = 'Install ESX'
   script = """# pxe boot and install
-dhcp.set_pxe( interface=structure.provisioning_interface, pxe='esx' )
-foundation.power_on()
-delay( seconds=120 )
-foundation.wait_for_poweroff()
+begin( description='Install ESXi', expected_time=10:00 )
+  dhcp.set_pxe( interface=structure.provisioning_interface, pxe='esx' )
+  foundation.power_on()
+  delay( seconds=120 )
+  foundation.wait_for_poweroff()
+end
 
-dhcp.set_pxe( interface=structure.provisioning_interface, pxe='normal-boot' )
-foundation.power_on()
+begin( description='Power on ESXi' )
+  dhcp.set_pxe( interface=structure.provisioning_interface, pxe='normal-boot' )
+  foundation.power_on()
+end
 
-iputils.wait_for_port( target=structure.primary_ip, port=80 )
-# after the first boot, the network may come up while the script runs
-delay( seconds=120 )
-# now it is rebooting, so wait for it to come up again
-iputils.wait_for_port( target=structure.primary_ip, port=80 )
+begin( description='wait for ESXi to boot', expected_time=5:00 )
+  iputils.wait_for_port( target=structure.primary_ip, port=80 )
+  # after the first boot, the network may come up while the script runs
+  delay( seconds=120 )
+  # now it is rebooting, so wait for it to come up again
+  iputils.wait_for_port( target=structure.primary_ip, port=80 )
+end
 
 # a little margin before we start doing anything, hopfully the quickstats get updated in this time
 delay( seconds=30 )
@@ -59,7 +65,7 @@ foundation.power_off()
 [ pxe.esx ]
   boot_script = """echo ESX Installer
 kernel -n mboot.c32 {{ __pxe_location }}vmware/esx-installer/mboot.c32
-imgargs mboot.c32 -c {{ __pxe_location }}vmware/esx-installer/boot.cfg ks={{ __pxe_template_location }}
+imgargs mboot.c32 -c {{ __pxe_location }}vmware/esx-installer/boot.cfg ks={{ __contractor_host }}/config/pxe_template/c/{{ _structure_config_uuid }}
 boot mboot.c32
 """
   template = """{% set network = _primary_address %}
