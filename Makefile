@@ -56,14 +56,6 @@ dist-clean: clean
 
 .PHONY:: all version clean dist-clean
 
-oldvcenter:
-	patch -p0 < vcenter-pre67.patch
-
-newvcenter:
-	patch -p0 -R < vcenter-pre67.patch
-
-.PHONY:: oldvcenter newvcenter
-
 respkg-blueprints:
 	echo ubuntu-focal-base
 
