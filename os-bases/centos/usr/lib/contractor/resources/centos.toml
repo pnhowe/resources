@@ -34,7 +34,7 @@ initrd {{ __pxe_location }}/centos-installer/6.initrd
 boot
 """
   template = """install
-url --url=http://{{ mirror_server }}/centos/6.10/os/x86_64{% if mirror_proxy %} --proxy={{ mirror_proxy }}{% endif %}
+url --url=http://{{ mirror_server }}/centos/6.10/os/x86_64{% if http_proxy %} --proxy={{ http_proxy }}{% endif %}
 lang en_US.UTF-8
 keyboard us
 network --hostname={{ _fqdn }}
@@ -80,7 +80,7 @@ initrd {{ __pxe_location }}/centos-installer/7.initrd
 boot
 """
   template = """install
-url --url=http://{{ mirror_server }}/centos/7/os/x86_64{% if mirror_proxy %} --proxy={{ mirror_proxy }}{% endif %}
+url --url=http://{{ mirror_server }}/centos/7/os/x86_64{% if http_proxy %} --proxy={{ http_proxy }}{% endif %}
 lang en_US.UTF-8
 keyboard us
 network --hostname={{ _fqdn }}

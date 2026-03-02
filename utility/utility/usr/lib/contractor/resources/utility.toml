@@ -6,7 +6,7 @@
   'cpu_count': 2
   'disk_size': 100
   '>user_list' = [ { name = 'jbuser', group = 'jbgroup', password_hash = '$6$jbuserjbuser$S.RvuUr1xgPvZpus7zVWzPtjb5MiECT5jQI9DFLIF10HF3Vr2SyCjVy9hBdYuIoglBZQplBp9UYWCgfTSNghl/', sudo_list = [ 'ALL=(ALL) ALL' ] } ]
-  '>repo_list' = [ { distribution = 'stable', type = 'apt', uri = 'http://dl.google.com/linux/chrome/deb/', components = [ 'main' ], key_uri = 'https://dl-ssl.google.com/linux/linux_signing_key.pub', proxy = '{{ mirror_proxy|default( "local" ) }}' } ]
+  '>repo_list' = [ { distribution = 'stable', type = 'apt', uri = 'http://dl.google.com/linux/chrome/deb/', components = [ 'main' ], key_uri = 'https://dl-ssl.google.com/linux/linux_signing_key.pub', proxy = '{{ http_proxy|default( "local" ) }}' } ]
   '>package_list' = [ 'xubuntu-desktop', 'remmina', 'icedtea-8-plugin', 'google-chrome-stable', 'xorgxrdp', 'xrdp' ]
   '>postinstall_command_list' = [ 'rm /etc/xrdp/rsakeys.ini /etc/xrdp/*.pem',
                                   '/usr/bin/xrdp-keygen xrdp auto',
